@@ -4,6 +4,13 @@ import java.awt.event.KeyListener;
 import java.util.Map;
 
 import javax.swing.table.DefaultTableModel;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.GpioPinPwmOutput;
 
 public class KeyEventDeal implements KeyListener{
 
@@ -22,7 +29,15 @@ public class KeyEventDeal implements KeyListener{
 	MenuItem menuItem = new MenuItem();
 	
 	PictureFrame pictureFrame = new PictureFrame();
-	
+	ControlGpioExample pinCtrlR = new ControlGpioExample();
+	GpioPinDigitalOutput pinR = pinCtrlR.initGPIO(RaspiPin.GPIO_29, "LED-R", PinState.LOW);
+	ControlGpioExample pinCtrlG = new ControlGpioExample();
+	GpioPinDigitalOutput pinG = pinCtrlG.initGPIO(RaspiPin.GPIO_28, "LED-G", PinState.LOW);
+	ControlGpioExample pinCtrlB = new ControlGpioExample();
+	GpioPinDigitalOutput pinB = pinCtrlB.initGPIO(RaspiPin.GPIO_27, "LED-B", PinState.LOW);
+	PwmExample pinPwm = new PwmExample();
+	GpioPinPwmOutput pinPwmOut;//50hz
+
 	public KeyEventDeal(MenuJTable table,
 			Map<String,MenuArrayList> map,
 			MenuManager manager,
@@ -35,6 +50,36 @@ public class KeyEventDeal implements KeyListener{
 		this.modelHead = modelHead;
 		this.menuHeadList = map.get("mainMenuHead");
 		this.map = map;
+		try{
+			pinPwmOut = pinPwm.initPWMPin(RaspiPin.GPIO_01,1200,320);
+			pinPwm.setPwmPin(pinPwmOut,30);
+		}catch(InterruptedException ex){
+
+		}	
+	}
+
+	public void gpioCtrl(MenuArrayList menuItemList,MenuJTable table,MenuManager manager,DefaultTableModel model,ControlGpioExample pinCtrl,GpioPinDigitalOutput pin,String lastValue){
+		if(lastValue.equals("TRUE")) {
+			
+			try{
+				pinCtrl.reSetGPIO(pin);
+			}catch(InterruptedException ex){
+
+			}
+			
+			System.out.println("now is TRUE");
+			manager.changeItemValue(menuItemList, table.getSelectedRow(), "FALSE", model);
+		}else if (lastValue.equals("FALSE")) {
+			
+			try{
+				pinCtrl.setGPIO(pin);
+			}catch(InterruptedException ex){
+
+			}
+			
+			System.out.println("now is FALSE");
+			manager.changeItemValue(menuItemList, table.getSelectedRow(), "TRUE", model);
+		}
 	}
 	
 	public void keyLeft() {
@@ -55,12 +100,18 @@ public class KeyEventDeal implements KeyListener{
 		lastType = menuList.get(table.getSelectedRow()).getType();
 		lastValue = menuList.get(table.getSelectedRow()).getValue();
 		if(lastType.equals("bool")) {
-			if(lastValue.equals("TRUE")) {
-				System.out.println("now is TRUE");
-				manager.changeItemValue(menuList, table.getSelectedRow(), "FALSE", model);
-			}else if (lastValue.equals("FALSE")) {
-				System.out.println("now is FALSE");
-				manager.changeItemValue(menuList, table.getSelectedRow(), "TRUE", model);
+			switch(table.getSelectedRow()){
+				case 0:
+					gpioCtrl(menuItemList,table,manager,model,pinCtrlR,pinR,lastValue);
+					break;
+				case 1:
+					gpioCtrl(menuItemList,table,manager,model,pinCtrlG,pinG,lastValue);
+					break;
+				case 2:
+					gpioCtrl(menuItemList,table,manager,model,pinCtrlB,pinB,lastValue);
+					break;
+				default:
+					break;
 			}
 		}else if(lastType.equals("int")){
 			int num = Integer.parseInt(menuList.get(table.getSelectedRow()).getValue());
@@ -68,6 +119,11 @@ public class KeyEventDeal implements KeyListener{
 			if(num<menuItem.getMinValue()) {
 				num = menuItem.getMinValue();
 			}	
+			try{
+				pinPwm.setPwmPin(pinPwmOut,30+num*10);
+			}catch(InterruptedException ex){
+
+			}
 			pictureFrame.updateImages(System.getProperty("user.dir")+"/images/pic"+String.valueOf(num+1)+".jpg");
 			manager.changeItemValue(menuList, table.getSelectedRow(), String.valueOf(num), model);
 		}else {
@@ -93,18 +149,29 @@ public class KeyEventDeal implements KeyListener{
 		lastType = menuList.get(table.getSelectedRow()).getType();
 		lastValue = menuList.get(table.getSelectedRow()).getValue();
 		if(lastType.equals("bool")) {
-			if(lastValue.equals("TRUE")) {
-				System.out.println("now is TRUE");
-				manager.changeItemValue(menuList, table.getSelectedRow(), "FALSE", model);
-			}else if (lastValue.equals("FALSE")) {
-				System.out.println("now is FALSE");
-				manager.changeItemValue(menuList, table.getSelectedRow(), "TRUE", model);
+			switch(table.getSelectedRow()){
+				case 0:
+					gpioCtrl(menuItemList,table,manager,model,pinCtrlR,pinR,lastValue);
+					break;
+				case 1:
+					gpioCtrl(menuItemList,table,manager,model,pinCtrlG,pinG,lastValue);
+					break;
+				case 2:
+					gpioCtrl(menuItemList,table,manager,model,pinCtrlB,pinB,lastValue);
+					break;
+				default:
+					break;
 			}
 		}else if(lastType.equals("int")){
 			int num = Integer.parseInt(menuList.get(table.getSelectedRow()).getValue());
 			num ++;
 			if(num>menuItem.getMaxValue()) {
 				num = menuItem.getMaxValue();
+			}
+			try{
+				pinPwm.setPwmPin(pinPwmOut,30+num*10);
+			}catch(InterruptedException ex){
+
 			}
 			pictureFrame.updateImages(System.getProperty("user.dir")+"/images/pic"+String.valueOf(num+1)+".jpg");
 			manager.changeItemValue(menuList, table.getSelectedRow(), String.valueOf(num), model);
@@ -165,17 +232,11 @@ public class KeyEventDeal implements KeyListener{
 			
 		case KeyEvent.VK_A:
 		case KeyEvent.VK_LEFT:
-			//pictureFrame.setLocation(pictureFrame.getX()-10,pictureFrame.getY());
-			//System.out.println("pictureFrame.getX:"+pictureFrame.getX());
-			//System.out.println("pictureFrame.getY:"+pictureFrame.getY());
 			keyLeft();
 			break;
 			
 		case KeyEvent.VK_D:		
 		case KeyEvent.VK_RIGHT:
-			//pictureFrame.setLocation(pictureFrame.getX()+10,pictureFrame.getY());
-			//System.out.println("pictureFrame.getX:"+pictureFrame.getX());
-			//System.out.println("pictureFrame.getY:"+pictureFrame.getY());
 			keyRight();
 			break;
 			
@@ -228,8 +289,6 @@ public class KeyEventDeal implements KeyListener{
 			}
 			break;
 			
-
-
 		default:
 			break;
 		}
