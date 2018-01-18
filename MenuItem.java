@@ -1,4 +1,9 @@
-
+/**
+* MenuItem类，每一个条目都是一个MenuItem对象
+* date：2018.1.15
+* @author headwind
+* @version V0.0
+*/
 public class MenuItem {
 	private String id;
 	private String itemName;

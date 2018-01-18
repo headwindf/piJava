@@ -1,12 +1,16 @@
+/**
+* MenuArrayList，用来保存菜单中的每一个条目
+* date：2018.1.16
+* @author headwind
+* @version V0.0
+*/
+
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 public class MenuArrayList extends ArrayList<MenuItem>{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	@Override

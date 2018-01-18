@@ -1,15 +1,12 @@
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
+/**
+* 自定义的表格，继承JTable，重写方法使其不能被编辑
+* date：2018.1.16
+* @author headwind
+* @version V0.0
+*/
 
-import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.plaf.TableUI;
-import javax.swing.plaf.basic.BasicTableUI;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 public class MenuJTable extends JTable{
 	@Override

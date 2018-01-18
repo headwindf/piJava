@@ -1,9 +1,15 @@
+/**
+* MenuHeadJtable，显示最上面的信息，需要合并单元格、重写方法
+* date：2018.1.16
+* @author headwind
+* @version V0.0
+*/
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-
 import javax.swing.JComponent;
 import javax.swing.plaf.TableUI;
 import javax.swing.plaf.basic.BasicTableUI;
@@ -91,20 +97,9 @@ public class MenuHeadJtable extends MenuJTable{
     {  
         if(row==0||row==1)  
         {  
-            //System.out.println("row="+row);  
-              
             Rectangle rect = new Rectangle(0, this.getRowHeight() * row, this  
                     .getWidth(), this.getRowHeight());  
-          
             //repaint();  
-            /*
-            System.out.println(row);  
-            System.out.println(rect.getX());  
-            System.out.println(rect.getY());  
-            System.out.println(rect.getWidth());  
-            System.out.println(rect.getHeight());  
-            System.out.println("===============");  
-            */
             return rect;  
         }  
           

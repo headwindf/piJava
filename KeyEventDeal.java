@@ -1,3 +1,10 @@
+/**
+* 按键事件处理
+* date：2018.1.18
+* @author headwind
+* @version V0.1
+*/
+
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -14,10 +21,11 @@ import com.pi4j.io.gpio.GpioPinPwmOutput;
 
 public class KeyEventDeal implements KeyListener{
 
+	private String leftOrRight = "left";
 	int loc = 0;
 	int lastLoction = 0;
-	String lastValue = null;
-	String lastType = null;
+	String rowValue = null;
+	String rowType = null;
 	MenuJTable table;
 	MenuArrayList menuItemList;
 	MenuArrayList menuList;
@@ -58,83 +66,28 @@ public class KeyEventDeal implements KeyListener{
 		}	
 	}
 
-	public void gpioCtrl(MenuArrayList menuItemList,MenuJTable table,MenuManager manager,DefaultTableModel model,ControlGpioExample pinCtrl,GpioPinDigitalOutput pin,String lastValue){
-		if(lastValue.equals("TRUE")) {
-			
+	public void gpioCtrl(MenuArrayList menuItemList,MenuJTable table,MenuManager manager,DefaultTableModel model,ControlGpioExample pinCtrl,GpioPinDigitalOutput pin,String rowValue){
+		if(rowValue.equals("TRUE")) {
 			try{
 				pinCtrl.reSetGPIO(pin);
 			}catch(InterruptedException ex){
 
 			}
-			
 			System.out.println("now is TRUE");
 			manager.changeItemValue(menuItemList, table.getSelectedRow(), "FALSE", model);
-		}else if (lastValue.equals("FALSE")) {
-			
+		}else if (rowValue.equals("FALSE")) {
 			try{
 				pinCtrl.setGPIO(pin);
 			}catch(InterruptedException ex){
 
 			}
-			
 			System.out.println("now is FALSE");
 			manager.changeItemValue(menuItemList, table.getSelectedRow(), "TRUE", model);
 		}
 	}
 	
-	public void keyLeft() {
-		System.out.println("left");
-		if(table.getSelectedRow()==3) {
-			pictureFrame.setVisible(true);
-			
-			//table.requestFocus();
-	    	//table.changeSelection(table.getSelectedRow(),0,false, false);
-		}else {
-			pictureFrame.setVisible(false);
-		}
-		if(manager.getIsMainMenu()) {
-			menuList = menuItemList;
-		}else {
-			menuList = map.get("subMenuItem");
-		}
-		lastType = menuList.get(table.getSelectedRow()).getType();
-		lastValue = menuList.get(table.getSelectedRow()).getValue();
-		if(lastType.equals("bool")) {
-			switch(table.getSelectedRow()){
-				case 0:
-					gpioCtrl(menuItemList,table,manager,model,pinCtrlR,pinR,lastValue);
-					break;
-				case 1:
-					gpioCtrl(menuItemList,table,manager,model,pinCtrlG,pinG,lastValue);
-					break;
-				case 2:
-					gpioCtrl(menuItemList,table,manager,model,pinCtrlB,pinB,lastValue);
-					break;
-				default:
-					break;
-			}
-		}else if(lastType.equals("int")){
-			int num = Integer.parseInt(menuList.get(table.getSelectedRow()).getValue());
-			num --;
-			if(num<menuItem.getMinValue()) {
-				num = menuItem.getMinValue();
-			}	
-			try{
-				pinPwm.setPwmPin(pinPwmOut,30+num*10);
-			}catch(InterruptedException ex){
-
-			}
-			pictureFrame.updateImages(System.getProperty("user.dir")+"/images/pic"+String.valueOf(num+1)+".jpg");
-			manager.changeItemValue(menuList, table.getSelectedRow(), String.valueOf(num), model);
-		}else {
-			
-		}
-		table.updateUI();	
-	}
-	
-	public void keyRight() {
-		System.out.println("right");
-		if(table.getSelectedRow()==3) {
+	public void keyLeftAndRight(int row,String leftOrRight) {
+		if(row == 3) {
 			pictureFrame.setVisible(true);
 			//table.requestFocus();
 	    	//table.changeSelection(table.getSelectedRow(),0,false, false);
@@ -146,27 +99,34 @@ public class KeyEventDeal implements KeyListener{
 		}else {
 			menuList = map.get("subMenuItem");
 		}
-		lastType = menuList.get(table.getSelectedRow()).getType();
-		lastValue = menuList.get(table.getSelectedRow()).getValue();
-		if(lastType.equals("bool")) {
-			switch(table.getSelectedRow()){
+		rowType = menuList.get(row).getType();
+		rowValue = menuList.get(row).getValue();
+		if(rowType.equals("bool")) {
+			switch(row){
 				case 0:
-					gpioCtrl(menuItemList,table,manager,model,pinCtrlR,pinR,lastValue);
+					gpioCtrl(menuItemList,table,manager,model,pinCtrlR,pinR,rowValue);
 					break;
 				case 1:
-					gpioCtrl(menuItemList,table,manager,model,pinCtrlG,pinG,lastValue);
+					gpioCtrl(menuItemList,table,manager,model,pinCtrlG,pinG,rowValue);
 					break;
 				case 2:
-					gpioCtrl(menuItemList,table,manager,model,pinCtrlB,pinB,lastValue);
+					gpioCtrl(menuItemList,table,manager,model,pinCtrlB,pinB,rowValue);
 					break;
 				default:
 					break;
 			}
-		}else if(lastType.equals("int")){
-			int num = Integer.parseInt(menuList.get(table.getSelectedRow()).getValue());
-			num ++;
-			if(num>menuItem.getMaxValue()) {
-				num = menuItem.getMaxValue();
+		}else if(rowType.equals("int")){
+			int num = Integer.parseInt(rowValue);
+			if(leftOrRight.equals("left")){
+				num --;
+				if(num<menuItem.getMinValue()) {
+					num = menuItem.getMinValue();
+				}	
+			}else if(leftOrRight.equals("right")){
+				num ++;
+				if(num>menuItem.getMaxValue()) {
+					num = menuItem.getMaxValue();
+				}
 			}
 			try{
 				pinPwm.setPwmPin(pinPwmOut,30+num*10);
@@ -174,7 +134,7 @@ public class KeyEventDeal implements KeyListener{
 
 			}
 			pictureFrame.updateImages(System.getProperty("user.dir")+"/images/pic"+String.valueOf(num+1)+".jpg");
-			manager.changeItemValue(menuList, table.getSelectedRow(), String.valueOf(num), model);
+			manager.changeItemValue(menuList, row, String.valueOf(num), model);
 		}else {
 			
 		}
@@ -190,107 +150,114 @@ public class KeyEventDeal implements KeyListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		String a;
+		String value;
+		int row = table.getSelectedRow();
 		if(manager.getIsMainMenu()) {
 			menuList = menuItemList;
 		}else {
 			menuList = map.get("subMenuItem");
 		}
 		switch (e.getKeyCode()) {
-		case KeyEvent.VK_UP:
-			System.out.println("up");
-			if(table.getSelectedRow()!=3) {
-				
-				pictureFrame.setVisible(false);
-			}
+			//上键，w键需要模拟上键按下，因为在jtable中上键具有上下移动的功能
+			case KeyEvent.VK_W:
+				try {
+					Robot r = new Robot();//创建自动化工具对象
+					r.keyPress(KeyEvent.VK_UP);
+					r.keyRelease(KeyEvent.VK_UP);
+				} catch (Exception e2) {
+					return;
+				}
+				break;
 
-			if(table.getSelectedRow()!=0 || table.getSelectedRow() != table.getRowCount()) {
-				manager.changeItemId(menuList, lastLoction, "  "+String.format("%2d", lastLoction).replace(" ", "0"),model);
-				manager.changeItemId(menuList, table.getSelectedRow(), "* "+String.format("%2d", table.getSelectedRow()).replace(" ", "0"),model);
-				a = "*"+String.format("%2d", table.getSelectedRow()).replace(" ", "0");
-		    	System.out.println(a);
-		    	System.out.println(table.getSelectedRow());
-			}
-			table.updateUI();
-			break;
-		
-		case KeyEvent.VK_DOWN:
-			if(table.getSelectedRow()!=3) {
+			case KeyEvent.VK_UP:
+				System.out.println("up");
+				if(row!=3) {
+					pictureFrame.setVisible(false);
+				}
+
+				if(row!=0 || row != table.getRowCount()) {
+					manager.changeItemId(menuList, lastLoction, "  "+String.format("%2d", lastLoction).replace(" ", "0"),model);
+					manager.changeItemId(menuList, row, "* "+String.format("%2d", row).replace(" ", "0"),model);
+					value = "*"+String.format("%2d", row).replace(" ", "0");
+			    	System.out.println(value);
+			    	System.out.println(row);
+				}
+				table.updateUI();
+				break;
+			
+			//下键，同上理
+			case KeyEvent.VK_S:
+				try {
+					Robot r = new Robot();//创建自动化工具对象
+					r.keyPress(KeyEvent.VK_DOWN);
+					r.keyRelease(KeyEvent.VK_DOWN);
+				} catch (Exception e2) {
+					return;
+				}
+				break;
+
+			case KeyEvent.VK_DOWN:
+				if(row!=3) {
+					pictureFrame.setVisible(false);
+				}
+				System.out.println("down");
+				if(row!=0 || row != table.getRowCount()) {
+					manager.changeItemId(menuList, lastLoction, "  "+String.format("%2d", lastLoction).replace(" ", "0"),model);
+					manager.changeItemId(menuList, row, "* "+String.format("%2d", row).replace(" ", "0"),model);
+					value = "*"+String.format("%2d", row).replace(" ", "0");
+			    	System.out.println(value);
+			    	System.out.println(row);
+				}
+				table.updateUI();
+				break;
 				
-				pictureFrame.setVisible(false);
-			}
-			System.out.println("down");
-			if(table.getSelectedRow()!=0 || table.getSelectedRow() != table.getRowCount()) {
-				manager.changeItemId(menuList, lastLoction, "  "+String.format("%2d", lastLoction).replace(" ", "0"),model);
-				manager.changeItemId(menuList, table.getSelectedRow(), "* "+String.format("%2d", table.getSelectedRow()).replace(" ", "0"),model);
-				a = "*"+String.format("%2d", table.getSelectedRow()).replace(" ", "0");
-		    	System.out.println(a);
-		    	System.out.println(table.getSelectedRow());
-			}
-			table.updateUI();
-			break;
+			//左键	
+			case KeyEvent.VK_A:
+			case KeyEvent.VK_LEFT:
+				System.out.println("left");
+				keyLeftAndRight(row,"left");
+				break;
+				
+			//右键
+			case KeyEvent.VK_D:		
+			case KeyEvent.VK_RIGHT:
+				System.out.println("right");
+				keyLeftAndRight(row,"right");
+				break;
 			
-		case KeyEvent.VK_A:
-		case KeyEvent.VK_LEFT:
-			keyLeft();
-			break;
-			
-		case KeyEvent.VK_D:		
-		case KeyEvent.VK_RIGHT:
-			keyRight();
-			break;
-			
-		case KeyEvent.VK_E:
-			lastType = menuList.get(table.getSelectedRow()).getType();
-			if(lastType.equals("sub")) {
-				loc = table.getSelectedRow();
-				manager.enterSubMenu(menuHeadList,"SUB  MENU",modelHead);
-				manager.reflesh();
-				manager.removeAll(menuItemList,model);
-				manager.updateItem(map.get("subMenuItem"), model);
-				table.requestFocus();
-		    	table.changeSelection(manager.getLastLocation(),0,false, false);
-		    	manager.setLastLocation(loc);
-			}
-			break;
-			
-		case KeyEvent.VK_Q:
-			if(manager.getIsMainMenu()) {
-				System.exit(0);
-			}else {
-				loc = table.getSelectedRow();
-				manager.enterMainMenu(menuHeadList,"FACTORY MENU",modelHead);
-				manager.reflesh();
-				manager.removeAll(map.get("subMenuItem"),model);
-				manager.updateItem(menuItemList, model);
-				table.requestFocus();
-		    	table.changeSelection(manager.getLastLocation(),0,false, false);
-		    	manager.setLastLocation(loc);
-			}			
-			break;
-			
-		case KeyEvent.VK_S:
-			try {
-				Robot r = new Robot();//创建自动化工具对象
-				r.keyPress(KeyEvent.VK_DOWN);
-				r.keyRelease(KeyEvent.VK_DOWN);
-			} catch (Exception e2) {
-				return;
-			}
-			break;
-			
-		case KeyEvent.VK_W:
-			try {
-				Robot r = new Robot();//创建自动化工具对象
-				r.keyPress(KeyEvent.VK_UP);
-				r.keyRelease(KeyEvent.VK_UP);
-			} catch (Exception e2) {
-				return;
-			}
-			break;
-			
-		default:
-			break;
+			//进入子菜单
+			case KeyEvent.VK_E:
+				rowType = menuList.get(row).getType();
+				if(rowType.equals("sub")) {
+					loc = row;
+					manager.enterSubMenu(menuHeadList,"SUB  MENU",modelHead);
+					manager.reflesh();
+					manager.removeAll(menuItemList,model);
+					manager.updateItem(map.get("subMenuItem"), model);
+					table.requestFocus();
+			    	table.changeSelection(manager.getLastLocation(),0,false, false);
+			    	manager.setLastLocation(loc);
+				}
+				break;
+				
+			//exit键功能，退出子菜单/程序
+			case KeyEvent.VK_Q:
+				if(manager.getIsMainMenu()) {
+					System.exit(0);
+				}else {
+					loc = row;
+					manager.enterMainMenu(menuHeadList,"FACTORY MENU",modelHead);
+					manager.reflesh();
+					manager.removeAll(map.get("subMenuItem"),model);
+					manager.updateItem(menuItemList, model);
+					table.requestFocus();
+			    	table.changeSelection(manager.getLastLocation(),0,false, false);
+			    	manager.setLastLocation(loc);
+				}			
+				break;
+				
+			default:
+				break;
 		}
 	}
 	

@@ -1,5 +1,10 @@
+/**
+* 表头样式-重写方法-空表头
+* date：2018.1.16
+* @author headwind
+* @version V0.0
+*/
 import java.awt.Component;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
