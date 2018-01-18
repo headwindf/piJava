@@ -33,8 +33,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import com.pi4j.io.serial.*;
 
-public class MenuManager extends JFrame {
+public class MenuManager extends JFrame implements Runnable{
 	
 	private static final long serialVersionUID = 1L;
     private static int fwidth = 900;
@@ -189,71 +190,13 @@ public class MenuManager extends JFrame {
     public int getLastLocation() {
 		return this.lastLocation;
 	}
-    
-    public static void main(String[] args) throws AWTException{ 
-    	Map<String,MenuArrayList> map =new HashMap<String,MenuArrayList>();
-    	
-    	MenuArrayList mainMenuItemList = new MenuArrayList();
-    	MenuArrayList mainMenuHeadList = new MenuArrayList();
-    	MenuArrayList subMenuItemList = new MenuArrayList();
-    	
-    	map.put("mainMenuHead", mainMenuHeadList);
-    	map.put("mainMenuItem", mainMenuItemList);
-    	map.put("subMenuItem", subMenuItemList);
-    	
-    	DefaultTableModel model = new DefaultTableModel();
-    	DefaultTableModel modelHead = new DefaultTableModel();
-    	MenuJTable table = new MenuJTable(model);
-    	MenuHeadJtable tableHead = new MenuHeadJtable(modelHead);
-    	JTableHeader tableHeader = table.getTableHeader();
-    	DefaultTableCellRenderer renderer = new DefaultTableCellRenderer(); 
-    	renderer.setHorizontalAlignment(JLabel.CENTER);   
-    	table.setDefaultRenderer(Object.class, renderer);
-    	tableHeader.setDefaultRenderer(new HeadRenderer(tableHeader.getDefaultRenderer()));
-    	tableHeader = tableHead.getTableHeader();
-    	tableHeader.setDefaultRenderer(new HeadRenderer(tableHeader.getDefaultRenderer()));
-    	
-    	MenuManager manager = new MenuManager();
-    	manager.init(model,table,tableHead,modelHead);
 
-    	manager.addItem("","","text","FACTORY MENU",mainMenuHeadList);
-    	manager.addItem("","","text","<1> return/exit                             <2> show menu",mainMenuHeadList);
-    	manager.updateItem(map.get("mainMenuHead"), modelHead);
-    	
-    	manager.addItem("* 00","LED-R","bool","FALSE",mainMenuItemList);
-    	manager.addItem("  01","LED-G","bool","FALSE",mainMenuItemList);
-    	manager.addItem("  02","LED-B","bool","FALSE",mainMenuItemList);
-    	manager.addItem("  03","Steering level","int","5",mainMenuItemList);
-    	manager.addItem("  04","SUB MENU","sub",">>>>",mainMenuItemList);
-    	manager.addItem("  05","SUB MENU","sub",">>>>",mainMenuItemList);
-    	manager.addItem("  06","SUB MENU","sub",">>>>",mainMenuItemList);
-    	manager.addItem("  07","SUB MENU","sub",">>>>",mainMenuItemList);
-    	manager.updateItem(map.get("mainMenuItem"), model);
-    	
-    	manager.addItem("* 00","sub-item1","bool","FALSE",subMenuItemList);
-    	manager.addItem("  01","sub-item2","bool","FALSE",subMenuItemList);
-    	
-    	//manager.removeItem(mainMenuItemList, 3, model);
-    
-    	table.requestFocus();
-    	table.changeSelection(0,0,false, false);
-
-    	tableHead.setEnabled(false);
-    	//SelectionListener listener = new SelectionListener(table);
-    	//table.getSelectionModel().addListSelectionListener(listener);
-    	
-    	System.out.println(System.getProperty("user.dir"));
-    	/*
-    	try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace(); 
-        }
-        */
-    	table.addKeyListener(new KeyEventDeal(table,map,manager,model,modelHead));
-    	//manager.setVisible(true);
-    	
+    public void run(){
+        System.out.println("run in Thread");
+        
     }
+    
+
 }
 
 
