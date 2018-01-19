@@ -73,7 +73,7 @@ public class KeyEventDeal implements KeyListener{
 			}catch(InterruptedException ex){
 
 			}
-			System.out.println("now is TRUE");
+			//System.out.println("now is TRUE");
 			manager.changeItemValue(menuItemList, table.getSelectedRow(), "FALSE", model);
 		}else if (rowValue.equals("FALSE")) {
 			try{
@@ -81,7 +81,7 @@ public class KeyEventDeal implements KeyListener{
 			}catch(InterruptedException ex){
 
 			}
-			System.out.println("now is FALSE");
+			//System.out.println("now is FALSE");
 			manager.changeItemValue(menuItemList, table.getSelectedRow(), "TRUE", model);
 		}
 	}
@@ -170,7 +170,7 @@ public class KeyEventDeal implements KeyListener{
 				break;
 
 			case KeyEvent.VK_UP:
-				System.out.println("up");
+				//System.out.println("up");
 				if(row!=3) {
 					pictureFrame.setVisible(false);
 				}
@@ -179,8 +179,8 @@ public class KeyEventDeal implements KeyListener{
 					manager.changeItemId(menuList, lastLoction, "  "+String.format("%2d", lastLoction).replace(" ", "0"),model);
 					manager.changeItemId(menuList, row, "* "+String.format("%2d", row).replace(" ", "0"),model);
 					value = "*"+String.format("%2d", row).replace(" ", "0");
-			    	System.out.println(value);
-			    	System.out.println(row);
+			    	//System.out.println(value);
+			    	//System.out.println(row);
 				}
 				table.updateUI();
 				break;
@@ -200,13 +200,13 @@ public class KeyEventDeal implements KeyListener{
 				if(row!=3) {
 					pictureFrame.setVisible(false);
 				}
-				System.out.println("down");
+				//System.out.println("down");
 				if(row!=0 || row != table.getRowCount()) {
 					manager.changeItemId(menuList, lastLoction, "  "+String.format("%2d", lastLoction).replace(" ", "0"),model);
 					manager.changeItemId(menuList, row, "* "+String.format("%2d", row).replace(" ", "0"),model);
 					value = "*"+String.format("%2d", row).replace(" ", "0");
-			    	System.out.println(value);
-			    	System.out.println(row);
+			    	//System.out.println(value);
+			    	//System.out.println(row);
 				}
 				table.updateUI();
 				break;
@@ -214,14 +214,14 @@ public class KeyEventDeal implements KeyListener{
 			//左键	
 			case KeyEvent.VK_A:
 			case KeyEvent.VK_LEFT:
-				System.out.println("left");
+				//System.out.println("left");
 				keyLeftAndRight(row,"left");
 				break;
 				
 			//右键
 			case KeyEvent.VK_D:		
 			case KeyEvent.VK_RIGHT:
-				System.out.println("right");
+				//System.out.println("right");
 				keyLeftAndRight(row,"right");
 				break;
 			
@@ -266,5 +266,4 @@ public class KeyEventDeal implements KeyListener{
 		// TODO Auto-generated method stub
 		lastLoction = table.getSelectedRow();
 	}
-
 }

@@ -13,11 +13,9 @@ public class ImageRenderer extends DefaultTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,   
 	        boolean isSelected, boolean hasFocus, int row, int column) {   
-	    if(column==2&&row==3){ 
-	    	System.out.println("dsfage");
+	    if(column==2&&row==3){
 	        return new JLabel(new ImageIcon("img/pic1.png"));
 	    }else{
-	    	System.out.println("sfa");
 	        return super.getTableCellRendererComponent(table, value, isSelected,hasFocus, row, column);
 	    }
 	}   

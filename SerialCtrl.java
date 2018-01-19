@@ -16,6 +16,7 @@ import javax.swing.table.JTableHeader;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import com.pi4j.wiringpi.Gpio;
 
 /**
  * This example code demonstrates how to perform serial communications using the Raspberry Pi.
@@ -30,7 +31,7 @@ public class SerialCtrl {
     //private static Serial serial;
 
     public Serial initSerial(){
-        System.out.println("serial");
+        //System.out.println("serial");
         final Serial serial = SerialFactory.createInstance();
         try {
             // create serial config object
@@ -67,7 +68,7 @@ public class SerialCtrl {
                     String commandStr = uartPackage.unzipPackage(event.getHexByteString());
                     switch(commandStr){
                         case "menu":
-                            System.out.println("you got menu");
+                            //System.out.println("you got menu");
                             createFrame();
                             break;
                         case "up":
@@ -78,7 +79,7 @@ public class SerialCtrl {
                             } catch (Exception e2) {
                                 return;
                             }
-                            System.out.println("you got up");
+                            //System.out.println("you got up");
                             serialCtrl.sendMessage(serial,"up");
                             break;
                         case "down":
@@ -89,7 +90,7 @@ public class SerialCtrl {
                             } catch (Exception e2) {
                                 return;
                             }
-                            System.out.println("you got down");
+                           // System.out.println("you got down");
                             serialCtrl.sendMessage(serial,"down");
                             break;
                         case "left":
@@ -100,7 +101,7 @@ public class SerialCtrl {
                             } catch (Exception e2) {
                                 return;
                             }
-                            System.out.println("you got left");
+                            //System.out.println("you got left");
                             serialCtrl.sendMessage(serial,"left");
                             break;
                         case "right":
@@ -111,7 +112,7 @@ public class SerialCtrl {
                             } catch (Exception e2) {
                                 return;
                             }
-                            System.out.println("you got right");
+                            //System.out.println("you got right");
                             serialCtrl.sendMessage(serial,"right");
                             break;
                         case "exit":
@@ -122,12 +123,12 @@ public class SerialCtrl {
                             } catch (Exception e2) {
                                 return;
                             }
-                            System.out.println("you got exit");
+                            //System.out.println("you got exit");
                             serialCtrl.sendMessage(serial,"exit");
                             break;
 
                         case "error":
-                            System.out.println("you got error");
+                            //System.out.println("you got error");
                             serialCtrl.sendMessage(serial,"error");
                             break;
                         default :
@@ -220,13 +221,23 @@ public class SerialCtrl {
 
     public static void main(String[] args) throws AWTException{ 
         
-        //createFrame();
+        createFrame();
+
+        //serial = serialCtrl.initSerial();
+        //serialCtrl.receieveDeal(serial);
+        //serialCtrl.sendMessage(serial,"menu");
+
+        WiringPiGpioInterrupt wiringPiGpioInterrupt = new WiringPiGpioInterrupt();
+        try {
+            wiringPiGpioInterrupt.initGpioInterrupt();
+        } catch (InterruptedException e) {
+            e.printStackTrace(); 
+        }
         
-        //new Thread(manager,"串口").start();
-        serial = serialCtrl.initSerial();
-        serialCtrl.receieveDeal(serial);
-        serialCtrl.sendMessage(serial,"menu");
-        while(true);
+        while(true){
+           
+                
+        }
     }
 }
 

@@ -35,7 +35,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import com.pi4j.io.serial.*;
 
-public class MenuManager extends JFrame implements Runnable{
+public class MenuManager extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
     private static int fwidth = 900;
@@ -54,8 +54,8 @@ public class MenuManager extends JFrame implements Runnable{
     	int w = (Toolkit.getDefaultToolkit().getScreenSize().width - fwidth) / 2;
         int h = (Toolkit.getDefaultToolkit().getScreenSize().height - fheigth) / 2;
         this.setLocation(w, h);
-        System.out.println("父窗体w："+ w);
-        System.out.println("父窗体h："+ h);
+        //System.out.println("父窗体w："+ w);
+        //System.out.println("父窗体h："+ h);
     	
     	setResizable(false);
         setUndecorated(true);
@@ -63,7 +63,7 @@ public class MenuManager extends JFrame implements Runnable{
         setSize(fwidth, fheigth);
         setVisible(true);
         
-        
+        /*
         addWindowFocusListener(new WindowFocusListener()
 		{
 			public void windowGainedFocus(WindowEvent e)
@@ -77,7 +77,7 @@ public class MenuManager extends JFrame implements Runnable{
 				System.out.println("父窗体失去焦点");
 			}
 		});
-
+*/
 		Vector names = new Vector();
 		Vector data = new Vector(); 
 		Vector row = new Vector(); 
@@ -190,13 +190,7 @@ public class MenuManager extends JFrame implements Runnable{
     public int getLastLocation() {
 		return this.lastLocation;
 	}
-
-    public void run(){
-        System.out.println("run in Thread");
-        
-    }
     
-
 }
 
 

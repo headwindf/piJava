@@ -30,10 +30,8 @@ public class MenuHeadJtable extends MenuJTable{
         super.setUI(new BasicTableUI(){  
              public void paint(Graphics g, JComponent c) {   
                     Rectangle r=g.getClipBounds();   
-                    int firstRow=table.rowAtPoint(new Point(0,r.y));   
-                    System.out.println("firstRow:"+firstRow+"r.y:"+r.y);
-                    int lastRow=table.rowAtPoint(new Point(0,r.y+r.height));  
-                    System.out.println("lastRow:"+lastRow+"r.y+r.height:"+(r.y+r.height));
+                    int firstRow=table.rowAtPoint(new Point(0,r.y)); 
+                    int lastRow=table.rowAtPoint(new Point(0,r.y+r.height)); 
                     // -1 is a flag that the ending point is outside the table   
                     if (lastRow<0)   
                          lastRow=table.getRowCount()-1;   

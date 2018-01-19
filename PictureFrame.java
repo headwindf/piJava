@@ -32,7 +32,7 @@ public class PictureFrame extends JFrame{
         setAlwaysOnTop(true);
         //setEnabled(false);
         setFocusableWindowState(false);
-        
+        /*
         addWindowFocusListener(new WindowFocusListener()
 		{
 			public void windowGainedFocus(WindowEvent e)
@@ -46,9 +46,10 @@ public class PictureFrame extends JFrame{
 				System.out.println("子窗体失去焦点");
 			}
 		});
+        */
         this.setLocation(w, h);
-        System.out.println("子窗体w："+ w);
-        System.out.println("子窗体h："+ h);
+        //System.out.println("子窗体w："+ w);
+        //System.out.println("子窗体h："+ h);
         	
 	}
 	
